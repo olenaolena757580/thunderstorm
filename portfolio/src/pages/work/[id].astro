@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const work = await getCollection('work');
+  return work.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base title={`${entry.data.title} · Olena`} description={entry.data.summary}>
+  <article>
+    <a class="back" href="/#work">← All work</a>
+    <p class="meta">{entry.data.year} · {entry.data.role}</p>
+    <h1>{entry.data.title}</h1>
+    <p class="lede">{entry.data.summary}</p>
+    {entry.data.repo && <p><a href={entry.data.repo} rel="noopener">View code on GitHub →</a></p>}
+    <div class="body"><Content /></div>
+  </article>
+</Base>
+
+<style>
+  article { max-width: 680px; padding: 40px 0; }
+  .back { color: var(--muted); text-decoration: none; font-size: 15px; }
+  .meta { color: var(--accent); font-size: 14px; margin: 32px 0 12px; }
+  h1 { font-size: clamp(32px, 6vw, 52px); }
+  .lede { color: var(--muted); font-size: 19px; }
+  .body :global(h2) { font-size: 26px; margin: 40px 0 12px; }
+</style>
