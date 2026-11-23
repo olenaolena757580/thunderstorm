@@ -1,52 +1,47 @@
 # Product brief
 
-Monitoring drones for oil and gas sites. A drone is delivered to a remote site,
-set up and activated by a courier, flown and monitored remotely by engineers,
-and the results are reviewed by managers.
+Firefighting drones for oil and gas and other severely dangerous industrial
+sites. A drone is delivered to the site, assembled and armed by a courier, then
+flown manually by an operator, who releases extinguishing powder over the
+danger zone. Managers follow many jobs at once.
+
+Sites carry a risk of fire and explosion. The courier leaves the site as fast
+as possible. Jobs come from other software, so the apps do not create them.
 
 ## Roles and apps
 
-| Role | Who | App | Platform |
+Three roles, one codebase, shown as three apps that share accounts, jobs, live
+status and alerts.
+
+| Role | Who | What they do | Devices |
 |---|---|---|---|
-| Courier | Novice, non-technical field worker | Delivery, setup, checks, activation | Phone |
-| Operator | Engineer, works in a pair with a peer | Remote session over video broadcast | Desktop |
-| Manager | C-level | Summary, drill-down analytics, observer mode | Desktop |
+| Courier | Field worker, gloves, bright sun, may have poor eyesight | Gets the job by QR code, code or API. Pre-assembles the drone before the site, with photo checks. On site: connects and attaches, removes the launcher safety, places the drone, runs the connection test, leaves | Phone, portrait, works offline |
+| Operator | Pilot, one job at a time, one operator per flight | Receives "delivery complete", checks the link, flies manually with live video and a map. Powder discharge needs a double confirmation (slider, with a cancel window). After a lost link: hold until it returns | Desktop, phone landscape |
+| Manager | Oversees many jobs in parallel, view only | Summary first (successful missions), drill-down into sites, flights, people, drones. Can pick an Operator for a job, cannot reassign. Live video on request. No reports for now | Desktop, phone landscape |
 
-## Design directions
+## Decisions so far
 
-**A, Courier: one clear step at a time.** One task per screen in plain
-language. Checks that cannot be skipped. Fast data entry. Activation only after
-every check has passed. Works without signal. Leave the site as fast as
-possible. The flow opens with one safety tap, and ends with "Leave now" as the
-only thing on screen, shown only when every check has passed and the drone is
-active. Whatever can wait is saved on the phone and sent later.
-
-**B, Operator: ready, live, decided.** No session before the ready notice
-(delivered, checked, set). Live data and the video broadcast in one window. One
-shared view with the peer operator. An explicit success or failure call with
-detailed session analysis. Link health and video delay always visible. A lost
-link to the drone is unmistakable: banner above the content, frozen and stale
-data marked as such. Open: Success is disabled while the link is down, to be
-confirmed.
-
-**C, Manager: summary first, then drill down.** A summary comes first.
-Drill-down from success and failure analytics, to one delivery, to one session.
-An overview of the field delivery process. Observer mode that cannot disturb the
-session. No reports or export for now.
-
-## Site conditions
-
-Sites carry a risk of explosion and have safety rules. The main rule is to leave
-the site as fast as possible. The exact checks are still to be supplied by
-someone who knows the sites; the app should refer to "the site's safety rules"
-in general terms and not assume specific standards.
+- The Operator is not asked to approve the courier's work. They only receive the
+  news that delivery is complete.
+- The courier reports that the safety is removed in the app. The app tests the
+  connection with the drone.
+- Placing the drone is final, with rare exceptions (serious assembly issue).
+- Operators cannot give a job back. They can forward it. Peer takeover only in
+  critical cases. No shared flight control for now.
+- Camera: plain only. No night vision, no thermal.
+- Drone is identified by scanning or typing the code from the drone first.
+  NFC and a job code come later.
+- Courier interface: larger type (smallest 20 pt), higher contrast, targets of
+  64 pt or more, one thing per screen, everything else behind More.
 
 ## Open questions
 
-- Which phone models are allowed on site (certified devices), and how the app is installed on them.
-- Exact site safety checks.
-- Who sets assignments? Manager?
-- Whether Success can be called while the link is lost.
-- Product name (placeholder: Startup).
+See the boards in the design file, under "To confirm before we draw". Main ones:
+pre-assembly photo rules, which connection lines must pass, the exact discharge
+confirmation pattern and cancel window, how a mission is marked successful when
+the drone is lost, Manager milestones (to be researched from firefighting
+incident command), and drone ID code format.
 
-The design boards live in the "Startup Org Structure" design file.
+## Design
+
+See `docs/design-system.md` and the Lilac design system in the design file.
